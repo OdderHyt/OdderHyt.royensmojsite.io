@@ -1,5 +1,6 @@
 html,body {
 	background: #1ba11a url(./img/tile.png) top left repeat;
+	z-index: -2;
 	font-family: Comic Sans,Comic Sans MS,cursive;
 	margin: 0;
 	padding: 0;
@@ -135,7 +136,7 @@ opacity: 0;
 animation: fadeIn 5s ease-out forwards;
 animation-delay: 5s;
 pointer-events: none; /* don’t block clicks on main image */
-z-index: 0;           /* behind the hero, above background */
+z-index: -1;           /* behind the hero, above background */
 will-change: transform;
 transform: translate3d(0,0,0);
 }
