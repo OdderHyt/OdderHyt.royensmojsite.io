@@ -2,7 +2,49 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 <head>
-	<title>Missing Roy Ensmoj</title>
+	<meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Roy Ensmoj</title>
+    <meta name="description" content="Har DU husket at lede efter Roy i dag?" />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://royensmoj.at/" />
+    <meta name="theme-color" content="#000000" />
+
+    <!-- Favicons -->
+    <link rel="icon" href="favicon.ico" sizes="any">
+    <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Roy Ensmoj" />
+    <meta property="og:locale" content="da_DK" />
+    <meta property="og:url" content="https://royensmoj.at/" />
+    <meta property="og:title" content="Roy Ensmoj" />
+    <meta property="og:description" content="Har DU husket at lede efter Roy i dag?" />
+
+    <!-- Primary preview image -->
+    <meta property="og:image" content="https://royensmoj.at/preview.jpg" />
+    <meta property="og:image:secure_url" content="https://royensmoj.at/preview.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="640" />
+    <meta property="og:image:height" content="632" />
+    <meta property="og:image:alt" content="Roy Ensmoj" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Roy Ensmoj" />
+    <meta name="twitter:description" content="Har DU husket at lede efter Roy i dag?" />
+    <meta name="twitter:image" content="https://royensmoj.at/preview.jpg" />
+    <meta name="twitter:image:alt" content="Roy Ensmoj" />
+
+    <!-- Legacy hints -->
+    <link rel="image_src" href="https://royensmoj.at/preview.jpg">
+    <meta name="thumbnail" content="https://royensmoj.at/preview.jpg">
+
+	<title>Missing: Roy Ensmoj</title>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
 	<link rel="stylesheet" type="text/css" href="save-roy-ensmoj.css" />
 </head>
@@ -79,6 +121,122 @@
 <script type="text/javascript">
 	document.getElementById("walter-container").onclick = function () { return window.location.href = 'https://royensmoj.at/' }
 </script>
+
+<!-- Bouncing image (behind) -->
+    <img id="bouncer"
+         src="https://royensmoj.at/img/bouncer.png"
+         alt="Join the Discord! Click anywhere!" />
+
+    <script>
+      (() => {
+        const bouncer = document.getElementById('bouncer');
+
+        // Speed in px/sec
+        let vx = 180, vy = 140;
+
+        // Position (top-left)
+        let x = 50, y = 50;
+
+        // Bounds
+        let maxX = 0, maxY = 0;
+
+        // Timing
+        let last = 0;
+
+        function viewportSize() {
+          const vv = window.visualViewport;
+          return {
+            w: (vv && vv.width)  ? vv.width  : window.innerWidth,
+            h: (vv && vv.height) ? vv.height : window.innerHeight
+          };
+        }
+
+        function updateBounds() {
+          const rect = bouncer.getBoundingClientRect();
+          const vw = viewportSize().w;
+          const vh = viewportSize().h;
+
+          const w = rect.width  || bouncer.offsetWidth;
+          const h = rect.height || bouncer.offsetHeight;
+
+          maxX = Math.max(0, vw - w);
+          maxY = Math.max(0, vh - h);
+
+          // Keep inside after resize/zoom/UI changes
+          x = Math.min(Math.max(0, x), maxX);
+          y = Math.min(Math.max(0, y), maxY);
+          bouncer.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        }
+
+        function step(ts) {
+          if (!last) last = ts;
+          // Clamp dt to avoid huge jumps when tab resumes
+          let dt = (ts - last) / 1000;
+          last = ts;
+          dt = Math.min(dt, 0.05);
+
+          x += vx * dt;
+          y += vy * dt;
+
+          // Mirror reflection to handle overshoot cleanly (no invisible walls)
+          while (x < 0 || x > maxX) {
+            if (x < 0) {
+              x = -x;           // reflect across 0
+              vx = Math.abs(vx);
+            } else if (x > maxX) {
+              x = 2 * maxX - x; // reflect across maxX
+              vx = -Math.abs(vx);
+            }
+          }
+          while (y < 0 || y > maxY) {
+            if (y < 0) {
+              y = -y;
+              vy = Math.abs(vy);
+            } else if (y > maxY) {
+              y = 2 * maxY - y;
+              vy = -Math.abs(vy);
+            }
+          }
+
+          bouncer.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+          requestAnimationFrame(step);
+        }
+
+        // Keep bounds correct on resize/zoom/URL bar changes
+        window.addEventListener('resize', updateBounds);
+        if (window.visualViewport) {
+          window.visualViewport.addEventListener('resize', updateBounds);
+          window.visualViewport.addEventListener('scroll', updateBounds);
+        }
+
+        const start = () => {
+          updateBounds();
+          // Randomize initial direction & position
+          const speed = Math.hypot(vx, vy);
+          const angle = 45 * Math.PI / 180; // or random if you prefer
+          vx = Math.cos(angle) * speed;
+          vy = Math.sin(angle) * speed;
+
+          const rect = bouncer.getBoundingClientRect();
+          const vw = viewportSize().w;
+          const vh = viewportSize().h;
+          const w = rect.width  || bouncer.offsetWidth;
+          const h = rect.height || bouncer.offsetHeight;
+
+          maxX = Math.max(0, vw - w);
+          maxY = Math.max(0, vh - h);
+
+          x = Math.random() * maxX;
+          y = Math.random() * maxY;
+
+          bouncer.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+          requestAnimationFrame(step);
+        };
+
+        if (bouncer.complete) start();
+        else bouncer.addEventListener('load', start, { once: true });
+      })();
+    </script>
 
 <style type="text/css">
 	* {cursor:pointer;}

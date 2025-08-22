@@ -125,3 +125,18 @@ div.ribbons p {
 	font-size:12px;
 	padding-bottom:20px;
 }
+/* Bouncing logo behind the hero */
+#bouncer {
+position: fixed;     /* pin to the viewport */
+left: 0; top: 0;
+width: 256px;        /* tweak size if you like */
+height: auto;
+opacity: 0;
+animation: fadeIn 5s ease-out forwards;
+animation-delay: 5s;
+pointer-events: none; /* don’t block clicks on main image */
+z-index: 0;           /* behind the hero, above background */
+will-change: transform;
+transform: translate3d(0,0,0);
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
