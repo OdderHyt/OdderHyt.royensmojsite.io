@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Roy Locations Index</title>
+  <meta name="description" content="Index of all Roy locations on Wplace" />
+  <link rel="stylesheet" type="text/css" href="save-roy-ensmoj.css" />
+</head>
+<body>
+  <div id="container">
+    <h1>Roy Locations Index</h1>
+    <div id="roy-locations"></div>
+  </div>
+  <script>
+    // Fetch and parse CSV file
+    function parseCSV(csv) {
+      const lines = csv.trim().split('\n');
+      const headers = lines[0].split(',');
+      return lines.slice(1).map(line => {
+        const values = line.split(',');
+        return Object.fromEntries(headers.map((h, i) => [h, values[i]]));
+      });
+    }
+  fetch('assets/roy-locations.csv')
+      .then(response => response.text())
+      .then(csvData => {
+        const locations = parseCSV(csvData);
+        const container = document.getElementById('roy-locations');
+        locations.forEach(loc => {
+          const div = document.createElement('div');
+          div.className = 'location-entry';
+          div.innerHTML = `
+            <h3>${loc.title}</h3>
+            <a href="${loc.link}" target="_blank">
+              <img src="assets/roy-locations/${loc.filename}" alt="${loc.title}" style="max-width:200px;">
+            </a>
+          `;
+          container.appendChild(div);
+        });
+      })
+      .catch(err => {
+        document.getElementById('roy-locations').innerHTML = '<p style="color:red">Failed to load locations.</p>';
+      });
+  </script>
+  <style>
+    #container { max-width: 700px; margin: 2em auto; background: #222; color: #fff; padding: 2em; border-radius: 1em; }
+    .location-entry { margin-bottom: 2em; border-bottom: 1px solid #444; padding-bottom: 1em; }
+    .location-entry img { display: block; margin: 1em 0; border-radius: 0.5em; }
+    h1, h3 { color: #ffb347; }
+    a { color: #7ecfff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</body>
+</html>
