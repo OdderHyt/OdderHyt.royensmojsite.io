@@ -23,6 +23,11 @@ Denmark:
     filename: Rønne.png
     title: Rønne
     link: https://wplace.live/?lat=55.093911263174284&lng=14.700849278027324
+  FaroeIslands:
+    Tvøroyri:
+      filename: Tvoroyri.png
+      title: Tvøroyri
+      link: https://wplace.live/?lat=61.55448638380835&lng=-6.806689784472681
 Canada:
   London:
     filename: CaLondon.png
