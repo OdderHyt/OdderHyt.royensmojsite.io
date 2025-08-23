@@ -38,7 +38,16 @@
           countryDiv.id = country;
           countryDiv.innerHTML = `<h2>${country}</h2>`;
           Object.entries(cities).forEach(([city, loc]) => {
-            const div = document.createElement('div');
+                    // Add city sublist
+                    const cityUl = document.createElement('ul');
+                    cityUl.className = 'toc-cities';
+                    Object.keys(cities).forEach(city => {
+                      const tocCity = document.createElement('li');
+                      tocCity.innerHTML = `<a href="#${country}-${city}">${city}</a>`;
+                      cityUl.appendChild(tocCity);
+                    });
+                    tocCountry.appendChild(cityUl);
+                    tocList.appendChild(tocCountry);
             div.className = 'location-entry';
             div.innerHTML = `
               <h3>${loc.title} <span class="city">(${city})</span></h3>
@@ -83,17 +92,33 @@
       list-style: none;
       padding: 0;
     }
-    #toc-list li {
-      margin-bottom: 1em;
-    }
-    #toc-list a {
-      color: #7ecfff;
-      text-decoration: none;
-      font-size: 1.1em;
-    }
-    #toc-list a:hover {
-      text-decoration: underline;
-    }
+      #toc-list > li {
+        margin-bottom: 1em;
+      }
+      #toc-list > li > a {
+        color: #7ecfff;
+        text-decoration: none;
+        font-size: 1.1em;
+      }
+      #toc-list > li > a:hover {
+        text-decoration: underline;
+      }
+      .toc-cities {
+        list-style: none;
+        padding-left: 1.2em;
+        margin: 0.2em 0 0.5em 0;
+      }
+      .toc-cities li {
+        margin-bottom: 0.3em;
+      }
+      .toc-cities a {
+        color: #b3e0ff;
+        text-decoration: none;
+        font-size: 1em;
+      }
+      .toc-cities a:hover {
+        text-decoration: underline;
+      }
     #container {
       max-width: 700px;
       margin: 2em auto;
