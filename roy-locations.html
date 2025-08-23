@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Roy Locations Index</title>
+  <meta name="description" content="Index of all Roy locations on Wplace" />
+  <link rel="stylesheet" type="text/css" href="save-roy-ensmoj.css" />
+</head>
+<body>
+  <div id="container">
+    <h1>Roy Locations Index</h1>
+    <div id="roy-locations"></div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+  <script>
+    fetch('assets/roy-locations.yml')
+      .then(response => response.text())
+      .then(yamlText => {
+        const data = window.jsyaml.load(yamlText);
+        const container = document.getElementById('roy-locations');
+        Object.entries(data).forEach(([country, locations]) => {
+          const countryDiv = document.createElement('div');
+          countryDiv.className = 'country-block';
+          countryDiv.innerHTML = `<h2>${country}</h2>`;
+          locations.forEach(loc => {
+            const div = document.createElement('div');
+            div.className = 'location-entry';
+            div.innerHTML = `
+              <h3>${loc.title} <span class="city">(${loc.city})</span></h3>
+              <a href="${loc.link}" target="_blank">
+                <img src="assets/roy-locations/${loc.filename}" alt="${loc.title}" style="max-width:200px;">
+              </a>
+            `;
+            countryDiv.appendChild(div);
+          });
+          container.appendChild(countryDiv);
+        });
+      })
+      .catch(err => {
+        document.getElementById('roy-locations').innerHTML = '<p style="color:red">Failed to load locations.</p>';
+      });
+  </script>
+  <style>
+    #container { max-width: 700px; margin: 2em auto; background: #222; color: #fff; padding: 2em; border-radius: 1em; }
+    .country-block { margin-bottom: 2em; }
+    .location-entry { margin-bottom: 1.5em; border-bottom: 1px solid #444; padding-bottom: 1em; }
+    .location-entry img { display: block; margin: 1em 0; border-radius: 0.5em; }
+    h1, h2, h3 { color: #ffb347; }
+    .city { color: #7ecfff; font-size: 0.9em; }
+    a { color: #7ecfff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</body>
+</html>

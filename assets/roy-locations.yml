@@ -1,0 +1,30 @@
+Denmark:
+  - city: Aalborg
+    filename: Aalborg.png
+    title: Aalborg hvor Roy høre hjemme
+    link: https://wplace.live/?lat=57.078724495429434&lng=10.01206021552732
+  - city: København
+    filename: København.png
+    title: København
+    link: https://wplace.live/?lat=55.55732344878106&lng=12.49373990302734
+  - city: Odense
+    filename: Odense.png
+    title: Odense
+    link: https://wplace.live/?lat=55.3605805927632&lng=10.690575840527323
+  - city: Aarhus
+    filename: Aarhus.png
+    title: Aarhus
+    link: https://wplace.live/?lat=56.118757834644185&lng=10.103993809277343
+  - city: Randers
+    filename: Randers.png
+    title: Randers
+    link: https://wplace.live/?lat=56.46147093403918&lng=10.058290684277313
+  - city: Rønne
+    filename: Rønne.png
+    title: Rønne
+    link: https://wplace.live/?lat=55.093911263174284&lng=14.700849278027324
+Canada:
+  - city: London.png
+    filename: CaLondon.png
+    title: London
+    link: https://wplace.live/?lat=42.87474056686381&lng=-81.20680697197267
