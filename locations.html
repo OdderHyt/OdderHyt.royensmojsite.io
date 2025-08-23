@@ -23,45 +23,55 @@
     fetch('assets/roy-locations.yml')
       .then(response => response.text())
       .then(yamlText => {
-        const data = window.jsyaml.load(yamlText);
-        const container = document.getElementById('roy-locations');
-        const tocList = document.getElementById('toc-list');
-        Object.entries(data).forEach(([country, cities]) => {
-          // Add to TOC
-          const tocCountry = document.createElement('li');
-          tocCountry.innerHTML = `<a href="#${country}">${country}</a>`;
-          tocList.appendChild(tocCountry);
+        try {
+          const data = window.jsyaml.load(yamlText);
+          const container = document.getElementById('roy-locations');
+          const tocList = document.getElementById('toc-list');
+          tocList.innerHTML = '';
+          Object.entries(data).forEach(([country, cities]) => {
+            // Add to TOC
+            const tocCountry = document.createElement('li');
+            const countryAnchor = `${country}`;
+            tocCountry.innerHTML = `<a href="#${country}">${country}</a>`;
+            // Add city sublist
+            const cityUl = document.createElement('ul');
+            cityUl.className = 'toc-cities';
+            Object.keys(cities).forEach(city => {
+              const tocCity = document.createElement('li');
+              const cityAnchor = `${country}-${city}`;
+              tocCity.innerHTML = `<a href="#${cityAnchor}">${city}</a>`;
+              cityUl.appendChild(tocCity);
+            });
+            tocCountry.appendChild(cityUl);
+            tocList.appendChild(tocCountry);
 
-          // Country block
-          const countryDiv = document.createElement('div');
-          countryDiv.className = 'country-block';
-          countryDiv.id = country;
-          countryDiv.innerHTML = `<h2>${country}</h2>`;
-          Object.entries(cities).forEach(([city, loc]) => {
-                    // Add city sublist
-                    const cityUl = document.createElement('ul');
-                    cityUl.className = 'toc-cities';
-                    Object.keys(cities).forEach(city => {
-                      const tocCity = document.createElement('li');
-                      tocCity.innerHTML = `<a href="#${country}-${city}">${city}</a>`;
-                      cityUl.appendChild(tocCity);
-                    });
-                    tocCountry.appendChild(cityUl);
-                    tocList.appendChild(tocCountry);
-            div.className = 'location-entry';
-            div.innerHTML = `
-              <h3>${loc.title} <span class="city">(${city})</span></h3>
-              <a href="${loc.link}" target="_blank">
-                <img src="assets/roy-locations/${loc.filename}" alt="${loc.title}" style="max-width:200px;">
-              </a>
-            `;
-            countryDiv.appendChild(div);
+            // Country block
+            const countryDiv = document.createElement('div');
+            countryDiv.className = 'country-block';
+            countryDiv.id = countryAnchor;
+            countryDiv.innerHTML = `<h2>${country}</h2>`;
+            Object.entries(cities).forEach(([city, loc]) => {
+              const div = document.createElement('div');
+              div.className = 'location-entry';
+              div.id = `${country}-${city}`;
+              div.innerHTML = `
+                <h3>${loc.title} <span class="city">(${city})</span></h3>
+                <a href="${loc.link}" target="_blank">
+                  <img src="assets/roy-locations/${loc.filename}" alt="${loc.title}" style="max-width:200px;">
+                </a>
+              `;
+              countryDiv.appendChild(div);
+            });
+            container.appendChild(countryDiv);
           });
-          container.appendChild(countryDiv);
-        });
+        } catch (err) {
+          document.getElementById('roy-locations').innerHTML = '<p style="color:red">YAML Parse Error: ' + err.message + '</p>';
+          console.error('YAML Parse Error:', err);
+        }
       })
       .catch(err => {
         document.getElementById('roy-locations').innerHTML = '<p style="color:red">Failed to load locations.</p>';
+        console.error('Failed to load locations:', err);
       });
   </script>
   <style>
@@ -79,82 +89,45 @@
       border-radius: 1em 0 0 1em;
       margin-right: 2em;
       min-height: 100vh;
-      position: sticky;
-      top: 0;
-      align-self: flex-start;
     }
-    #toc h2 {
-      color: #ffb347;
-      font-size: 1.2em;
-      margin-bottom: 1em;
+    #container {
+      background: #222;
+      color: #fff;
+      padding: 2em;
+      border-radius: 1em;
     }
     #toc-list {
       list-style: none;
       padding: 0;
     }
-      #toc-list > li {
-        margin-bottom: 1em;
-      }
-      #toc-list > li > a {
-        color: #7ecfff;
-        text-decoration: none;
-        font-size: 1.1em;
-      }
-      #toc-list > li > a:hover {
-        text-decoration: underline;
-      }
-      .toc-cities {
-        list-style: none;
-        padding-left: 1.2em;
-        margin: 0.2em 0 0.5em 0;
-      }
-      .toc-cities li {
-        margin-bottom: 0.3em;
-      }
-      .toc-cities a {
-        color: #b3e0ff;
-        text-decoration: none;
-        font-size: 1em;
-      }
+    #toc-list > li {
+      margin-bottom: 1em;
+    }
+    #toc-list > li > a {
+      color: #7ecfff;
+      text-decoration: none;
+      font-size: 1.1em;
+    }
+    #toc-list > li > a:hover {
+      text-decoration: underline;
+    }
+    .toc-cities {
+      list-style: none;
+      padding-left: 1.2em;
+      margin: 0.2em 0 0.5em 0;
+      display: block;
+    }
+    .toc-cities li {
+      margin-bottom: 0.3em;
+      display: list-item;
+    }
+    .toc-cities a {
+      color: #b3e0ff;
+      text-decoration: none;
+      font-size: 1em;
+    }
       .toc-cities a:hover {
         text-decoration: underline;
       }
-    #container {
-      max-width: 700px;
-      margin: 2em auto;
-      background: #222;
-      color: #fff;
-      padding: 2em;
-      border-radius: 1em;
-      flex: 1;
-    }
-    .country-block {
-      margin-bottom: 2em;
-    }
-    .location-entry {
-      margin-bottom: 1.5em;
-      border-bottom: 1px solid #444;
-      padding-bottom: 1em;
-    }
-    .location-entry img {
-      display: block;
-      margin: 1em 0;
-      border-radius: 0.5em;
-    }
-    h1, h2, h3 {
-      color: #ffb347;
-    }
-    .city {
-      color: #7ecfff;
-      font-size: 0.9em;
-    }
-    a {
-      color: #7ecfff;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
   </style>
-</body>
 </html>
