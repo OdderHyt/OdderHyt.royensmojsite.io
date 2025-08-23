@@ -36,20 +36,24 @@
               if (typeof value === 'object' && !Array.isArray(value) && !('filename' in value && 'title' in value && 'link' in value)) {
                 // Group (country/region)
                 // TOC
-                const tocItem = document.createElement('li');
-                tocItem.innerHTML = `<a href="#${anchor}">${key}</a>`;
-                const subUl = document.createElement('ul');
-                subUl.className = 'toc-cities';
-                buildTOCandContent(value, anchor, subUl, null, level + 1);
-                tocItem.appendChild(subUl);
-                tocParent.appendChild(tocItem);
+                if (tocParent) {
+                  const tocItem = document.createElement('li');
+                  tocItem.innerHTML = `<a href="#${anchor}">${key}</a>`;
+                  const subUl = document.createElement('ul');
+                  subUl.className = 'toc-cities';
+                  buildTOCandContent(value, anchor, subUl, null, level + 1);
+                  tocItem.appendChild(subUl);
+                  tocParent.appendChild(tocItem);
+                }
                 // Content
-                const groupDiv = document.createElement('div');
-                groupDiv.className = level === 1 ? 'country-block' : 'region-block';
-                groupDiv.id = anchor;
-                groupDiv.innerHTML = `<h${level + 1}>${key}</h${level + 1}>`;
-                if (contentParent) contentParent.appendChild(groupDiv);
-                buildTOCandContent(value, anchor, null, groupDiv, level + 1);
+                if (contentParent) {
+                  const groupDiv = document.createElement('div');
+                  groupDiv.className = level === 1 ? 'country-block' : 'region-block';
+                  groupDiv.id = anchor;
+                  groupDiv.innerHTML = `<h${level + 1}>${key}</h${level + 1}>`;
+                  contentParent.appendChild(groupDiv);
+                  buildTOCandContent(value, anchor, null, groupDiv, level + 1);
+                }
               } else if (typeof value === 'object' && 'filename' in value && 'title' in value && 'link' in value) {
                 // City/location
                 if (tocParent) {
