@@ -8,35 +8,47 @@
   <link rel="stylesheet" type="text/css" href="save-roy-ensmoj.css" />
 </head>
 <body>
-  <div id="container">
-    <h1>Roy Locations Index</h1>
-    <div id="roy-locations"></div>
+  <div id="layout">
+    <nav id="toc">
+      <h2>Indhold</h2>
+      <ul id="toc-list"></ul>
+    </nav>
+    <main id="container">
+      <h1>Roy Locations Index</h1>
+      <div id="roy-locations"></div>
+    </main>
   </div>
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
   <script>
-    // Fetch and parse CSV file
-    function parseCSV(csv) {
-      const lines = csv.trim().split('\n');
-      const headers = lines[0].split(',');
-      return lines.slice(1).map(line => {
-        const values = line.split(',');
-        return Object.fromEntries(headers.map((h, i) => [h, values[i]]));
-      });
-    }
-  fetch('assets/roy-locations.csv')
+    fetch('assets/roy-locations.yml')
       .then(response => response.text())
-      .then(csvData => {
-        const locations = parseCSV(csvData);
+      .then(yamlText => {
+        const data = window.jsyaml.load(yamlText);
         const container = document.getElementById('roy-locations');
-        locations.forEach(loc => {
-          const div = document.createElement('div');
-          div.className = 'location-entry';
-          div.innerHTML = `
-            <h3>${loc.title}</h3>
-            <a href="${loc.link}" target="_blank">
-              <img src="assets/roy-locations/${loc.filename}" alt="${loc.title}" style="max-width:200px;">
-            </a>
-          `;
-          container.appendChild(div);
+        const tocList = document.getElementById('toc-list');
+        Object.entries(data).forEach(([country, cities]) => {
+          // Add to TOC
+          const tocCountry = document.createElement('li');
+          tocCountry.innerHTML = `<a href="#${country}">${country}</a>`;
+          tocList.appendChild(tocCountry);
+
+          // Country block
+          const countryDiv = document.createElement('div');
+          countryDiv.className = 'country-block';
+          countryDiv.id = country;
+          countryDiv.innerHTML = `<h2>${country}</h2>`;
+          Object.entries(cities).forEach(([city, loc]) => {
+            const div = document.createElement('div');
+            div.className = 'location-entry';
+            div.innerHTML = `
+              <h3>${loc.title} <span class="city">(${city})</span></h3>
+              <a href="${loc.link}" target="_blank">
+                <img src="assets/roy-locations/${loc.filename}" alt="${loc.title}" style="max-width:200px;">
+              </a>
+            `;
+            countryDiv.appendChild(div);
+          });
+          container.appendChild(countryDiv);
         });
       })
       .catch(err => {
@@ -44,12 +56,80 @@
       });
   </script>
   <style>
-    #container { max-width: 700px; margin: 2em auto; background: #222; color: #fff; padding: 2em; border-radius: 1em; }
-    .location-entry { margin-bottom: 2em; border-bottom: 1px solid #444; padding-bottom: 1em; }
-    .location-entry img { display: block; margin: 1em 0; border-radius: 0.5em; }
-    h1, h3 { color: #ffb347; }
-    a { color: #7ecfff; text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    #layout {
+      display: flex;
+      flex-direction: row;
+      min-height: 100vh;
+      background: #222;
+    }
+    #toc {
+      width: 220px;
+      background: #181818;
+      color: #fff;
+      padding: 2em 1em 2em 2em;
+      border-radius: 1em 0 0 1em;
+      margin-right: 2em;
+      min-height: 100vh;
+      position: sticky;
+      top: 0;
+      align-self: flex-start;
+    }
+    #toc h2 {
+      color: #ffb347;
+      font-size: 1.2em;
+      margin-bottom: 1em;
+    }
+    #toc-list {
+      list-style: none;
+      padding: 0;
+    }
+    #toc-list li {
+      margin-bottom: 1em;
+    }
+    #toc-list a {
+      color: #7ecfff;
+      text-decoration: none;
+      font-size: 1.1em;
+    }
+    #toc-list a:hover {
+      text-decoration: underline;
+    }
+    #container {
+      max-width: 700px;
+      margin: 2em auto;
+      background: #222;
+      color: #fff;
+      padding: 2em;
+      border-radius: 1em;
+      flex: 1;
+    }
+    .country-block {
+      margin-bottom: 2em;
+    }
+    .location-entry {
+      margin-bottom: 1.5em;
+      border-bottom: 1px solid #444;
+      padding-bottom: 1em;
+    }
+    .location-entry img {
+      display: block;
+      margin: 1em 0;
+      border-radius: 0.5em;
+    }
+    h1, h2, h3 {
+      color: #ffb347;
+    }
+    .city {
+      color: #7ecfff;
+      font-size: 0.9em;
+    }
+    a {
+      color: #7ecfff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
   </style>
 </body>
 </html>
