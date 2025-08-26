@@ -15,6 +15,10 @@ Denmark:
     filename: Aarhus.png
     title: Aarhus
     link: https://wplace.live/?lat=56.118757834644185&lng=10.103993809277343
+  Ebletoft: 
+    filename: dk_ebletoft.png
+    title: Ebletoft (Roy Park)
+    link: https://wplace.live/?lat=56.26605299684766&lng=10.743837559277335
   Randers:
     filename: Randers.png
     title: Randers
@@ -33,3 +37,8 @@ Canada:
     filename: CaLondon.png
     title: London
     link: https://wplace.live/?lat=42.87474056686381&lng=-81.20680697197267
+Japan:
+  Kumamoto:
+    filename: japan_kumamoto.png
+    title: Kumamoto
+    link: https://wplace.live/?lat=32.98470670660046&lng=130.67991177802736
