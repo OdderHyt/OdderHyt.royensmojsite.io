@@ -16,8 +16,8 @@ Denmark:
     title: Aarhus
     link: https://wplace.live/?lat=56.118757834644185&lng=10.103993809277343
   Ebletoft: 
-    filename: dk_ebletoft.png
-    title: Ebletoft (Roy Park)
+    filename: dk_ebeltoft.png
+    title: Roy Park
     link: https://wplace.live/?lat=56.26605299684766&lng=10.743837559277335
   Randers:
     filename: Randers.png
@@ -35,10 +35,10 @@ Denmark:
 Canada:
   London:
     filename: CaLondon.png
-    title: London
+    title: Nogle ninjaer fra rummer leder i Canada
     link: https://wplace.live/?lat=42.87474056686381&lng=-81.20680697197267
 Japan:
   Kumamoto:
     filename: japan_kumamoto.png
-    title: Kumamoto
+    title: Selv i Japan savner de ham
     link: https://wplace.live/?lat=32.98470670660046&lng=130.67991177802736
