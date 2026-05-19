@@ -118,7 +118,7 @@ div.ribbons p {
   left: 0;
   top: 0;
   z-index: 0;              /* below #foreground (which is z-index: 1) */
-  pointer-events: auto;    /* allows bouncer to receive clicks */
+  pointer-events: none;    /* stage is transparent to clicks */
 }
 
 /* The moving image lives inside the stage */

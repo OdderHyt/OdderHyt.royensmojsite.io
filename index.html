@@ -166,9 +166,35 @@
       const stage   = document.getElementById('stage');
       const bouncer = document.getElementById('bouncer');
 
-      // Only bouncer clicks should navigate to Discord.
-      bouncer.addEventListener('click', () => {
-        window.open('https://discord.gg/8EN6smfSjc', '_blank', 'noopener,noreferrer');
+      // Bouncer is visually under content, so use coordinate hit-testing.
+      document.addEventListener('click', (event) => {
+        if (event.target.closest('#nav-menu') || event.target.closest('a')) return;
+
+        const rect = bouncer.getBoundingClientRect();
+        const insideX = event.clientX >= rect.left && event.clientX <= rect.right;
+        const insideY = event.clientY >= rect.top && event.clientY <= rect.bottom;
+
+        if (insideX && insideY) {
+          window.open('https://discord.gg/8EN6smfSjc', '_blank', 'noopener,noreferrer');
+        }
+      });
+
+      // Show hand cursor when hovering the bouncer's current position.
+      document.addEventListener('mousemove', (event) => {
+        if (event.target.closest('#nav-menu') || event.target.closest('a')) {
+          document.body.style.cursor = '';
+          return;
+        }
+
+        const rect = bouncer.getBoundingClientRect();
+        const insideX = event.clientX >= rect.left && event.clientX <= rect.right;
+        const insideY = event.clientY >= rect.top && event.clientY <= rect.bottom;
+
+        document.body.style.cursor = insideX && insideY ? 'pointer' : '';
+      });
+
+      document.addEventListener('mouseleave', () => {
+        document.body.style.cursor = '';
       });
 
       // Velocity (px/sec)
