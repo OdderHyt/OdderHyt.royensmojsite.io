@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Roy Voicemails</title>
+  <meta name="description" content="A collection of voicemails and audio files" />
+  <link rel="stylesheet" type="text/css" href="save-roy-ensmoj.css" />
+  <style>
+    #gag-container {
+      background: rgba(0, 0, 0, 0.8);
+      border: 3px solid #FFF;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 900px;
+      color: #FFF;
+    }
+
+    #gag-container h1 {
+      text-align: center;
+      color: #1ba11a;
+      font-size: 48px;
+      margin-top: 0;
+    }
+
+    .audio-item {
+      background: rgba(27, 161, 26, 0.2);
+      border: 2px solid #1ba11a;
+      border-radius: 6px;
+      padding: 15px;
+      margin: 10px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .audio-item audio {
+      width: 100%;
+      height: 32px;
+    }
+
+    .audio-metadata {
+      font-size: 12px;
+      color: #aaa;
+    }
+
+    .audio-caller {
+      font-weight: bold;
+      color: #1ba11a;
+      font-size: 14px;
+    }
+
+    .audio-date {
+      font-size: 12px;
+      color: #999;
+    }
+
+    #loading {
+      text-align: center;
+      padding: 20px;
+      color: #1ba11a;
+    }
+
+    #error {
+      text-align: center;
+      padding: 20px;
+      color: #ff6b6b;
+      background: rgba(255, 107, 107, 0.1);
+      border: 1px solid #ff6b6b;
+      border-radius: 4px;
+      line-height: 1.5;
+    }
+
+    .audio-count {
+      text-align: center;
+      color: #1ba11a;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .callout {
+      border: 2px solid #1ba11a;
+      background: rgba(27, 161, 26, 0.15);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    .callout-label {
+      color: #ddd;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+
+    .callout-number {
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 0.02em;
+      color: #ffffff;
+      text-decoration: none;
+    }
+
+    .callout-number:hover {
+      color: #1ba11a;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation Menu -->
+  <nav id="nav-menu">
+    <a href="index.html">🐀 Roy Ensmoj</a>
+    <a href="locations.html">📍 Locations (on wplace)</a>
+    <a href="voicemails.html">🎙️ Voicemails</a>
+    <a href="https://discord.gg/8EN6smfSjc" target="_blank" rel="noopener noreferrer">💬 Discord</a>
+  </nav>
+
+  <div id="gag-container">
+    <h1>🎙️ Voicemails & Audio Clips</h1>
+    <div class="callout">
+      <div class="callout-label">Call and leave a voicemail</div>
+      <a class="callout-number" href="tel:+4592456945">+45 92 45 69 45</a>
+    </div>
+    <div id="content">
+      <div id="loading">Loading voicemails...</div>
+    </div>
+  </div>
+
+  <script>
+    const INDEX_URL = 'https://media.royensmoj.at/voicemails/index.json';
+
+    async function loadVoicemails() {
+      const contentDiv = document.getElementById('content');
+      
+      try {
+        const index = await fetchIndex();
+
+        if (!Array.isArray(index) || index.length === 0) {
+          contentDiv.innerHTML = '<div id="error">No voicemails found yet.</div>';
+          return;
+        }
+
+        let html = `<div class="audio-count">Found ${index.length} voicemail${index.length !== 1 ? 's' : ''}</div>`;
+
+        for (const entry of index) {
+          const date = new Date(entry.receivedAt);
+          const dateStr = date.toLocaleDateString('da-DK', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+
+          html += `
+            <div class="audio-item">
+              <div class="audio-caller">📧 Anonymous caller</div>
+              <audio controls preload="metadata">
+                ${buildAudioSourceTags(entry)}
+                Your browser does not support the audio element.
+              </audio>
+              <div class="audio-metadata">
+                <div class="audio-date">Received: ${dateStr}</div>
+                <div class="audio-date">Size: ${formatBytes(entry.size)}</div>
+              </div>
+            </div>
+          `;
+        }
+
+        contentDiv.innerHTML = html;
+      } catch (error) {
+        console.error('Error loading voicemails:', error);
+        let errorMsg = error.message;
+        
+        if (error.message.includes('NetworkError') || error.message.includes('Failed to fetch')) {
+          errorMsg = 'Could not load voicemail index from media.royensmoj.at. Ensure media responses include Access-Control-Allow-Origin for https://royensmoj.at (or *).';
+        }
+        
+        contentDiv.innerHTML = `<div id="error">Error loading voicemails:<br/>${escapeHtml(errorMsg)}</div>`;
+      }
+    }
+
+    async function fetchIndex() {
+      const requestOptions = { method: 'GET', headers: { 'Accept': 'application/json' } };
+
+      const response = await fetch(INDEX_URL, requestOptions);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      return await response.json();
+    }
+
+    function buildAudioSourceTags(entry) {
+      const urls = resolveAudioUrls(entry);
+      const mime = resolvePlayableMimeType(entry);
+
+      return urls
+        .map(url => mime
+          ? `<source src="${escapeHtml(url)}" type="${escapeHtml(mime)}">`
+          : `<source src="${escapeHtml(url)}">`
+        )
+        .join('');
+    }
+
+    function resolveAudioUrls(entry) {
+      const file = String(entry.file || '').replace(/^\/+/, '');
+      const fromIndex = String(entry.url || '');
+
+      const candidates = [
+        fromIndex,
+        file ? `https://media.royensmoj.at/voicemails/${file}` : ''
+      ].filter(Boolean);
+
+      return Array.from(new Set(candidates));
+    }
+
+    function resolvePlayableMimeType(entry) {
+      const rawType = String(entry.contentType || '').toLowerCase();
+      if (rawType.startsWith('audio/')) {
+        return rawType;
+      }
+
+      const file = String(entry.file || '').toLowerCase();
+      if (file.endsWith('.wav')) return 'audio/wav';
+      if (file.endsWith('.mp3')) return 'audio/mpeg';
+      if (file.endsWith('.m4a')) return 'audio/mp4';
+      if (file.endsWith('.aac')) return 'audio/aac';
+      if (file.endsWith('.ogg')) return 'audio/ogg';
+      if (file.endsWith('.webm')) return 'audio/webm';
+
+      return '';
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    function formatBytes(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    }
+
+    // Load voicemails when page is ready
+    document.addEventListener('DOMContentLoaded', loadVoicemails);
+  </script>
+</body>
+</html>

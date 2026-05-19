@@ -118,7 +118,7 @@ div.ribbons p {
   left: 0;
   top: 0;
   z-index: 0;              /* below #foreground (which is z-index: 1) */
-  pointer-events: none;    /* never intercept clicks */
+  pointer-events: auto;    /* allows bouncer to receive clicks */
 }
 
 /* The moving image lives inside the stage */
@@ -127,6 +127,8 @@ div.ribbons p {
   left: 0; top: 0;
   width: 256px;
   height: auto;
+  pointer-events: auto;
+  cursor: pointer;
   opacity: 0;
   animation: fadeIn 5s ease-out forwards;
   animation-delay: 5s;
@@ -135,3 +137,30 @@ div.ribbons p {
 }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Navigation menu */
+#nav-menu {
+  position: relative;
+  z-index: 2;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 10px 0;
+  text-align: center;
+  border-bottom: 3px solid #1ba11a;
+}
+
+#nav-menu a {
+  color: #FFF;
+  text-decoration: none;
+  margin: 0 15px;
+  font-size: 18px;
+  font-weight: bold;
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+}
+
+#nav-menu a:hover {
+  background-color: #1ba11a;
+  color: #000;
+}

@@ -49,12 +49,21 @@
 </head>
 <body>
 
+  <!-- Navigation Menu -->
+  <nav id="nav-menu">
+    <a href="index.html">🐀 Roy Ensmoj</a>
+    <a href="locations.html">📍 Locations (on wplace)</a>
+    <a href="voicemails.html">🎙️ Voicemails</a>
+    <a href="https://discord.gg/8EN6smfSjc" target="_blank" rel="noopener noreferrer">💬 Discord</a>
+  </nav>
+
   <!-- BACKGROUND-STAGE (behind everything, spans full document) -->
   <div id="stage" aria-hidden="true">
     <img
       id="bouncer"
       src="./assets/bouncer.png"
-      alt=""
+      alt="Join the Roy Ensmoj Discord"
+      title="Join the Roy Ensmoj Discord"
     />
   </div>
 
@@ -151,18 +160,16 @@
     </div>
   </div>
 
-  <script type="text/javascript">
-    // Click anywhere in the main container -> Discord
-    document.getElementById("walter-container").onclick = function () {
-      return window.location.href = 'https://discord.gg/8EN6smfSjc';
-    };
-  </script>
-
   <!-- BOUNCER LOGIC: bounce within the full scrollable document -->
   <script>
     (() => {
       const stage   = document.getElementById('stage');
       const bouncer = document.getElementById('bouncer');
+
+      // Only bouncer clicks should navigate to Discord.
+      bouncer.addEventListener('click', () => {
+        window.open('https://discord.gg/8EN6smfSjc', '_blank', 'noopener,noreferrer');
+      });
 
       // Velocity (px/sec)
       let vx = 180, vy = 140;
@@ -279,8 +286,5 @@
     })();
   </script>
 
-  <style type="text/css">
-    * { cursor: pointer; }
-  </style>
 </body>
 </html>
